@@ -17,6 +17,31 @@ namespace Grocery.App.ViewModels
         private readonly IFileSaverService _fileSaverService;
         
         public ObservableCollection<GroceryListItem> MyGroceryListItems { get; set; } = [];
+        public ObservableCollection<Product> FilteredProducts { get; set; } = new();
+
+        // Command voor zoeken
+        [RelayCommand]
+        public void SearchProducts(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                // Reset naar alle producten
+                FilteredProducts.Clear();
+                foreach (var p in AvailableProducts)
+                    FilteredProducts.Add(p);
+            }
+            else
+            {
+                var filtered = AvailableProducts
+                    .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                FilteredProducts.Clear();
+                foreach (var p in filtered)
+                    FilteredProducts.Add(p);
+            }
+        }
+
         public ObservableCollection<Product> AvailableProducts { get; set; } = [];
 
         [ObservableProperty]
@@ -45,6 +70,10 @@ namespace Grocery.App.ViewModels
             foreach (Product p in _productService.GetAll())
                 if (MyGroceryListItems.FirstOrDefault(g => g.ProductId == p.Id) == null  && p.Stock > 0)
                     AvailableProducts.Add(p);
+            
+            // 🔑 Reset filter zodat CollectionView direct gevuld wordt
+            SearchProducts(string.Empty);
+
         }
 
         partial void OnGroceryListChanged(GroceryList value)
