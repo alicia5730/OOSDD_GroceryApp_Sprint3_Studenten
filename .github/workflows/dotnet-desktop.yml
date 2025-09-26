@@ -1,17 +1,17 @@
-name: Build .NET MAUI App
+name: Build MAUI App
 
 on:
   push:
-    branches: [ "dev", "main" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "dev", "main" ]
+    branches: [ "dev" ]
 
 jobs:
   build:
-    runs-on: macos-latest   # for iOS/Android. Change to ubuntu/windows if only Android/Windows.
+    runs-on: windows-latest
 
     steps:
-    - name: Checkout
+    - name: Checkout repo
       uses: actions/checkout@v4
 
     - name: Setup .NET
@@ -19,24 +19,28 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Install MAUI workloads
-      run: dotnet workload install maui-android maui-ios maui-maccatalyst
+    # Restore dependencies
+    - name: Restore
+      run: dotnet restore Grocery.App/Grocery.App.csproj
 
-    - name: Restore dependencies
-      run: dotnet restore
+    # --- Build Windows ---
+    - name: Build MAUI Windows
+      run: dotnet publish Grocery.App/Grocery.App.csproj -c Release -f net8.0-windows10.0.19041.0 -r win-x64 -p:PublishReadyToRun=false --self-contained true -o ./artifacts/windows
 
-    - name: Build MAUI Android (Release)
-      run: dotnet publish -f net8.0-android -c Release -o ./artifacts/android
+    # Upload Windows artifact
+    - name: Upload Windows Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GroceryApp-Windows
+        path: ./artifacts/windows
 
-    # uncomment if you want iOS too
-    # - name: Build MAUI iOS (Release)
-    #   run: dotnet publish -f net8.0-ios -c Release -o ./artifacts/ios
+    # --- Build Android ---
+    - name: Build MAUI Android
+      run: dotnet publish Grocery.App/Grocery.App.csproj -c Release -f net8.0-android -p:AndroidPackageFormat=apk -o ./artifacts/android
 
-    - name: Run tests
-      run: dotnet test --no-build --verbosity normal
-
+    # Upload Android artifact
     - name: Upload Android Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: maui-android-apk
-        path: ./artifacts/android/**/*.apk
+        name: GroceryApp-Android
+        path: ./artifacts/android

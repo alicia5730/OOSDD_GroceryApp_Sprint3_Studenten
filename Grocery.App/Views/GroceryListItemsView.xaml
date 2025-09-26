@@ -54,10 +54,17 @@
 
         <Border Grid.Row="1" Grid.Column="1" Stroke="#C49B33" StrokeThickness="4" Padding="5" Margin="5" HorizontalOptions="Center">
             <StackLayout>
-                <CollectionView ItemsSource="{Binding AvailableProducts}" Margin="5" WidthRequest="300" HorizontalOptions="Start"
-                    SelectionMode="Single"
-                    SelectionChangedCommand="{Binding AddProductCommand}"
-                    SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
+                <!-- Zoekveld Toegevoegd-->
+                <SearchBar Placeholder="Zoek product..."
+                           SearchCommand="{Binding SearchProductsCommand}"
+                           SearchCommandParameter="{Binding Text, Source={RelativeSource Self}}" />
+                <Picker Title="Filter categorie"
+                        ItemsSource="{Binding Categories}"
+                        SelectedItem="{Binding SelectedCategory}" />                <!-- Tweede collectief -->
+                <CollectionView ItemsSource="{Binding FilteredProducts}" Margin="5" WidthRequest="300" HorizontalOptions="Start"
+                                SelectionMode="Single"
+                                SelectionChangedCommand="{Binding AddProductCommand}"
+                                SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
                     </CollectionView.ItemsLayout>
@@ -76,8 +83,9 @@
                     <CollectionView.EmptyView>
                         <ContentView>
                             <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                                <Label Text="Er zijn geen producten meer om toe te voegen" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
-                            </VerticalStackLayout>
+                                <Label Text="{Binding EmptyMessage}" 
+                                       FontAttributes="Bold" 
+                                       HorizontalTextAlignment="Center"/>                            </VerticalStackLayout>
                         </ContentView>
                     </CollectionView.EmptyView>
                 </CollectionView>
