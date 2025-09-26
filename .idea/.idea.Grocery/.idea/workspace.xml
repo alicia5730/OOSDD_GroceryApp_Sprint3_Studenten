@@ -12,14 +12,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0a17bb6c-a400-4258-9518-b74509c5082f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/TestCore/TestHelpers.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TestCore/TestHelpers.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Grocery.App/ViewModels/GroceryListItemsViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Grocery.App/ViewModels/GroceryListItemsViewModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Grocery.App/Views/GroceryListItemsView.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/Grocery.App/Views/GroceryListItemsView.xaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Grocery.Core.Data/Repositories/ProductRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Grocery.Core.Data/Repositories/ProductRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Grocery.Core/Models/GroceryListItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Grocery.Core/Models/GroceryListItem.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Grocery.Core/Models/Product.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Grocery.Core/Models/Product.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Grocery.Core/Services/GroceryListItemsService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Grocery.Core/Services/GroceryListItemsService.cs" afterDir="false" />
-
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,27 +52,6 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "2b27eacf-d1dd-41e7-b17b-a2629357fc86.executor": "Debug",
-    "Android.Grocery.App.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "UWP.Grocery.App.executor": "Run",
-    "do_not_show_Android_plugin_suggestion": "true",
-    "git-widget-placeholder": "feature__uc09",
-    "iOS.Grocery.App.executor": "Run",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
-  }
-}]]>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;2b27eacf-d1dd-41e7-b17b-a2629357fc86.executor&quot;: &quot;Debug&quot;,
@@ -95,7 +72,6 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-
   <component name="RunManager" selected="UWP.Grocery.App">
     <configuration name="Grocery.App: Windows Machine" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/Grocery.App/Grocery.App.csproj" />
@@ -157,9 +133,7 @@
       <workItem from="1758797921387" duration="475000" />
       <workItem from="1758799715583" duration="413000" />
       <workItem from="1758800977505" duration="2628000" />
-
-      <workItem from="1758870618836" duration="7117000" />
-
+      <workItem from="1758870618836" duration="12819000" />
     </task>
     <servers />
   </component>
@@ -178,7 +152,6 @@
       </map>
     </option>
   </component>
-
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
