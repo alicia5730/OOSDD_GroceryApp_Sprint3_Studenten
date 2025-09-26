@@ -1,39 +1,46 @@
-name: MAUI CI (Windows only)
+name: Build MAUI App
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 
 jobs:
-  build-windows:
+  build:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repo
+      uses: actions/checkout@v4
 
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.414
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
 
-      - name: Install MAUI workload
-        run: dotnet workload install maui --ignore-failed-sources
+    # Restore dependencies
+    - name: Restore
+      run: dotnet restore Grocery.App/Grocery.App.csproj
 
-      # ✅ Alleen Windows target restoren
-      - name: Restore dependencies (Windows)
-        run: dotnet restore Grocery.App/Grocery.App.csproj -r win-x64
-      # ✅ Alleen Windows target builden
-      - name: Build MAUI app (Windows)
-        run: dotnet build Grocery.App/Grocery.App.csproj -c Release -f net8.0-windows10.0.19041.0 -r win-x64 --no-restore
+    # --- Build Windows ---
+    - name: Build MAUI Windows
+      run: dotnet publish Grocery.App/Grocery.App.csproj -c Release -f net8.0-windows10.0.19041.0 -r win-x64 -p:PublishReadyToRun=false --self-contained true -o ./artifacts/windows
 
-      - name: Publish MAUI app (Windows)
-        run: dotnet publish Grocery.App/Grocery.App.csproj -c Release -f net8.0-windows10.0.19041.0 -r win-x64 -o ./artifacts/maui -p:WindowsPackageType=None -p:PublishSingleFile=false -p:PublishReadyToRun=false
+    # Upload Windows artifact
+    - name: Upload Windows Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GroceryApp-Windows
+        path: ./artifacts/windows
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: GroceryApp-win-x64
-          path: artifacts/maui
+    # --- Build Android ---
+    - name: Build MAUI Android
+      run: dotnet publish Grocery.App/Grocery.App.csproj -c Release -f net8.0-android -p:AndroidPackageFormat=apk -o ./artifacts/android
+
+    # Upload Android artifact
+    - name: Upload Android Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GroceryApp-Android
+        path: ./artifacts/android
