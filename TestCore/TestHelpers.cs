@@ -51,6 +51,7 @@ namespace TestCore
                 result = false; 
             }
 
-            Assert.IsFalse(result);        }
+            Assert.IsFalse(result);        
+        }
     }
 }
