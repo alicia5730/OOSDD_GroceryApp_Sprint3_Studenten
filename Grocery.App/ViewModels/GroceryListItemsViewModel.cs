@@ -16,9 +16,26 @@ namespace Grocery.App.ViewModels
         private readonly IProductService _productService;
         private readonly IFileSaverService _fileSaverService;
         
-        public ObservableCollection<GroceryListItem> MyGroceryListItems { get; set; } = [];
-        public ObservableCollection<Product> AvailableProducts { get; set; } = [];
+        public ObservableCollection<string> Categories { get; } = new()
+        {
+            "Alle",
+            "Zuivel",
+            "Brood",
+            "Ontbijtgranen",
+            "Snacks",
+            "Overige"
+        };        
+        [ObservableProperty]
+        private string selectedCategory = "Alle";
+        [ObservableProperty]
+        private string emptyMessage = "Er zijn geen producten meer om toe te voegen.";
 
+        public ObservableCollection<GroceryListItem> MyGroceryListItems { get; set; } = [];
+        public ObservableCollection<Product> AvailableProducts { get; } = [];
+
+        public ObservableCollection<Product> FilteredProducts { get; set; } = new();
+
+        
         [ObservableProperty]
         GroceryList groceryList = new(0, "None", DateOnly.MinValue, "", 0);
         [ObservableProperty]
@@ -45,6 +62,10 @@ namespace Grocery.App.ViewModels
             foreach (Product p in _productService.GetAll())
                 if (MyGroceryListItems.FirstOrDefault(g => g.ProductId == p.Id) == null  && p.Stock > 0)
                     AvailableProducts.Add(p);
+            
+            ApplyFilter(SelectedCategory);
+
+
         }
 
         partial void OnGroceryListChanged(GroceryList value)
@@ -70,6 +91,7 @@ namespace Grocery.App.ViewModels
             OnGroceryListChanged(GroceryList);
         }
 
+        
         [RelayCommand]
         public async Task ShareGroceryList(CancellationToken cancellationToken)
         {
@@ -85,6 +107,61 @@ namespace Grocery.App.ViewModels
                 await Toast.Make($"Opslaan mislukt: {ex.Message}").Show(cancellationToken);
             }
         }
+        
+        //----------------------Producten filteren ------------------------------
+        private void ApplyFilter(string category)
+        {
+            FilteredProducts.Clear();
+
+            IEnumerable<Product> products = AvailableProducts;
+
+            if (!string.IsNullOrWhiteSpace(category) && category != "Alle")
+            {
+                products = products.Where(p => 
+                    p.Category.Equals(category, StringComparison.OrdinalIgnoreCase));
+            }
+
+            foreach (var p in products)
+                FilteredProducts.Add(p);
+
+            EmptyMessage = !FilteredProducts.Any()
+                ? $"Geen producten gevonden in categorie '{category}'."
+                : string.Empty;
+        }
+        partial void OnSelectedCategoryChanged(string value)
+        {
+            ApplyFilter(value);
+        }
+
+        // Command voor zoeken
+        [RelayCommand]
+        public void SearchProducts(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                // Reset naar alle producten
+                FilteredProducts.Clear();
+                foreach (var p in AvailableProducts)
+                    FilteredProducts.Add(p);
+            }
+            else
+            {
+                var filtered = AvailableProducts
+                    .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                FilteredProducts.Clear();
+                foreach (var p in filtered)
+                    FilteredProducts.Add(p);
+            }
+            // 🔑 update lege melding
+            if (!FilteredProducts.Any())
+                EmptyMessage = $"Geen resultaten gevonden voor '{searchTerm}'.";
+            else
+                EmptyMessage = string.Empty;
+        }
+
+        
 
     }
 }
