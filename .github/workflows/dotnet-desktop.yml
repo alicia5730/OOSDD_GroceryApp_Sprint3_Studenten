@@ -37,3 +37,4 @@ jobs:
         with:
           name: GroceryApp-win-x64
           path: artifacts/maui
+
