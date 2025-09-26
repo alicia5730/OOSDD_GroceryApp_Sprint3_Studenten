@@ -58,7 +58,9 @@
                 <SearchBar Placeholder="Zoek product..."
                            SearchCommand="{Binding SearchProductsCommand}"
                            SearchCommandParameter="{Binding Text, Source={RelativeSource Self}}" />
-                <!-- Tweede collectief -->
+                <Picker Title="Filter categorie"
+                        ItemsSource="{Binding Categories}"
+                        SelectedItem="{Binding SelectedCategory}" />                <!-- Tweede collectief -->
                 <CollectionView ItemsSource="{Binding FilteredProducts}" Margin="5" WidthRequest="300" HorizontalOptions="Start"
                                 SelectionMode="Single"
                                 SelectionChangedCommand="{Binding AddProductCommand}"
@@ -81,8 +83,9 @@
                     <CollectionView.EmptyView>
                         <ContentView>
                             <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                                <Label Text="Er zijn geen producten meer om toe te voegen" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
-                            </VerticalStackLayout>
+                                <Label Text="{Binding EmptyMessage}" 
+                                       FontAttributes="Bold" 
+                                       HorizontalTextAlignment="Center"/>                            </VerticalStackLayout>
                         </ContentView>
                     </CollectionView.EmptyView>
                 </CollectionView>
