@@ -1,39 +1,42 @@
-name: MAUI CI (Windows only)
+name: Build .NET MAUI App
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev", "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "dev", "main" ]
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build:
+    runs-on: macos-latest   # for iOS/Android. Change to ubuntu/windows if only Android/Windows.
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.414
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
 
-      - name: Install MAUI workload
-        run: dotnet workload install maui --ignore-failed-sources
+    - name: Install MAUI workloads
+      run: dotnet workload install maui-android maui-ios maui-maccatalyst
 
-      # ✅ Alleen Windows target restoren
-      - name: Restore dependencies (Windows)
-        run: dotnet restore Grocery.App/Grocery.App.csproj -r win-x64
-      # ✅ Alleen Windows target builden
-      - name: Build MAUI app (Windows)
-        run: dotnet build Grocery.App/Grocery.App.csproj -c Release -f net8.0-windows10.0.19041.0 -r win-x64 --no-restore
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Publish MAUI app (Windows)
-        run: dotnet publish Grocery.App/Grocery.App.csproj -c Release -f net8.0-windows10.0.19041.0 -r win-x64 -o ./artifacts/maui -p:WindowsPackageType=None -p:PublishSingleFile=false -p:PublishReadyToRun=false
+    - name: Build MAUI Android (Release)
+      run: dotnet publish -f net8.0-android -c Release -o ./artifacts/android
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: GroceryApp-win-x64
-          path: artifacts/maui
+    # uncomment if you want iOS too
+    # - name: Build MAUI iOS (Release)
+    #   run: dotnet publish -f net8.0-ios -c Release -o ./artifacts/ios
+
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal
+
+    - name: Upload Android Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: maui-android-apk
+        path: ./artifacts/android/**/*.apk
